@@ -1,0 +1,9 @@
+dkan_dashboard:
+  path: '/admin/reports/dkan/dashboard'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dashboard\Routes::dashboard'}
+  requirements:
+    _permission: 'get data through the alternate metastore api'
+  options:
+    _auth: ['basic_auth', 'cookie']
