@@ -10,7 +10,7 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\Factory\Import;
-use Drupal\datastore\Service\ImporterList\ImporterList;
+use Drupal\datastore\Service\Info\ImportInfoList;
 
 /**
  * Main services for the datastore.
@@ -170,15 +170,22 @@ class Service implements ContainerInjectionInterface {
 
   /**
    * Get a list of all stored importers and filefetchers, and their status.
-   *
-   * @return \Drupal\datastore\Service\ImporterList\ImporterList
-   *   The importer list object.
    */
   public function list() {
-    return ImporterList::getList(
-      $this->jobStoreFactory,
-      $this->resourceLocalizer,
-      $this->importServiceFactory);
+    /* @var $service ImportInfoList */
+    $service = \Drupal::service('dkan.datastore.import_info_list');
+    return $service->buildList();
+  }
+
+  public function summary($identifier) {
+    [$id, $version] = Resource::getIdentifierAndVersion($identifier);
+    $storage = $this->getStorage($id, $version);
+
+    if ($storage) {
+      $data = $storage->getSummary();
+      return $data;
+    }
+    throw new \Exception("no storage");
   }
 
   /**

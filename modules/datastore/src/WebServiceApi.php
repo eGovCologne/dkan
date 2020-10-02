@@ -60,16 +60,8 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function summary($identifier) {
     try {
-
-      [$id, $version] = Resource::getIdentifierAndVersion($identifier);
-      $storage = $this->datastoreService
-        ->getStorage($id, $version);
-
-      if ($storage) {
-        $data = $storage->getSummary();
-        return $this->getResponse($data);
-      }
-      throw new \Exception("no storage");
+      $data = $this->datastoreService->summary($identifier);
+      return $this->getResponse($data);
     }
     catch (\Exception $e) {
       $exception = new \Exception("A datastore for resource {$identifier} does not exist.");
