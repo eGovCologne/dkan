@@ -56,7 +56,7 @@ class Service implements ContainerInjectionInterface {
    * @param string $version
    *   A resource's version.
    */
-  public function import(string $identifier, bool $deferred = FALSE, $version = NULL): array {
+  public function import(string $identifier, bool $deferred = FALSE, $version): array {
 
     // If we passed $deferred, immediately add to the queue for later.
     if ($deferred == TRUE) {
@@ -96,7 +96,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function getResource($identifier, $version) {
+  private function getResource(string $identifier,string $version) {
     $label = $this->getLabelFromObject($this->resourceLocalizer);
 
     /* @var $resource \Drupal\common\Resource */
