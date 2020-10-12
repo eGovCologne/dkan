@@ -7,7 +7,9 @@ use Contracts\RemoverInterface;
 use Contracts\RetrieverInterface;
 use Contracts\StorerInterface;
 use DateTime;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\metastore\Events\DatasetPublication;
 use Drupal\node\NodeInterface;
 use HTMLPurifier;
 
@@ -15,6 +17,8 @@ use HTMLPurifier;
  * Data.
  */
 class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterface, RemoverInterface {
+
+  const EVENT_DATASET_PUBLICATION = 'dkan_metastore_dataset_publication';
 
   /**
    * Entity type manager.
@@ -136,10 +140,45 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     if ($node && $node->get('moderation_state') !== 'published') {
       $node->set('moderation_state', 'published');
       $node->save();
+      $this->dispatchDatasetPublication($node);
       return $uuid;
     }
 
     throw new \Exception("No data with that identifier was found.");
+  }
+
+  /**
+   * Dispatch dataset publication event.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $node
+   *   Node being published.
+   *
+   * @return \Symfony\Component\EventDispatcher\Event
+   *
+   * @codeCoverageIgnore
+   */
+  protected function dispatchDatasetPublication(EntityInterface $node) {
+    return \Drupal::service('event_dispatcher')->dispatch(
+      self::EVENT_DATASET_PUBLICATION,
+      new DatasetPublication($node)
+    );
+  }
+
+  /**
+   * Purge the unneeded resources of a specific dataset.
+   *
+   * @param string $uuid
+   *   A dataset identifier.
+   *
+   * @todo Add a purge scope modifier boolean to either target all unneeded
+   *   resources or only those since the last publication.
+   */
+  public function purgeUnneededResources(string $uuid) {
+    /** @var \Drupal\Core\Queue\QueueFactory $queue */
+    $queue = \Drupal::service('queue');
+    $queue->get('unneeded_resource_purger')->createItem([
+      'uuid' => $uuid,
+    ]);
   }
 
   /**
@@ -151,7 +190,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * @return \Drupal\Core\Entity\EntityInterface|null
    *   The node's published revision, if found.
    */
-  private function getNodePublishedRevision(string $uuid) {
+  public function getNodePublishedRevision(string $uuid) {
 
     $nid = $this->getNidFromUuid($uuid);
 
@@ -167,7 +206,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * @return \Drupal\Core\Entity\EntityInterface|null
    *   The node's latest revision, if found.
    */
-  private function getNodeLatestRevision(string $uuid) {
+  public function getNodeLatestRevision(string $uuid) {
 
     $nid = $this->getNidFromUuid($uuid);
 
