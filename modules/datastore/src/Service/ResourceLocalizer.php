@@ -132,14 +132,20 @@ class ResourceLocalizer {
    * Get FileFetcher.
    */
   public function getFileFetcher(Resource $resource): FileFetcher {
-    $uuid = "{$resource->getIdentifier()}_{$resource->getVersion()}";
-    $directory = "public://resources/{$uuid}";
+    $directory = $this->getDirectory($resource);
     $this->drupalFiles->getFilesystem()->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
     $config = [
       'filePath' => UrlHostTokenResolver::resolve($resource->getFilePath()),
       'temporaryDirectory' => $directory,
     ];
     return $this->fileFetcherFactory->getInstance($uuid, $config);
+  }
+
+  /**
+   * Private.
+   */
+  private function getDirectory(Resource $resource) {
+    return "public://resources/{$resource->getIdentifier()}_{$resource->getVersion()}";
   }
 
   /**
