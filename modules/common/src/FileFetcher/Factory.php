@@ -30,12 +30,10 @@ class Factory implements FactoryInterface {
   }
 
   /**
-   * Private.
+   * Get file fetcher job store.
    */
-  private function getFileFetcherJobStore() {
-    /* @var $jobStoreFactory JobStoreFactory */
-    $jobStoreFactory = $this->factory;
-    return $jobStoreFactory->getInstance(FileFetcher::class);
+  public function getFileFetcherJobStore() {
+    return $this->factory->getInstance(FileFetcher::class);
   }
 
 }
