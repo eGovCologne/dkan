@@ -47,4 +47,31 @@ class Drush extends DrushCommands {
     }
   }
 
+  /**
+   * Queue the purging of resources no longer needed by a specific dataset.
+   *
+   * @param string $uuid
+   *   A dataset uuid.
+   *
+   * @usage dkan:metastore:purge-unneeded-resources 1111-1111
+   *   Unburden resources of dataset 1111-1111.
+   *
+   * @command dkan:metastore:purge-unneeded-resources
+   * @aliases dkan:metastore:pur
+   *
+   * @todo Add an optional parameter to purge either target all unneeded
+   *   resources or only those since the last publication.
+   */
+  public function purgeUnneededResources(string $uuid) {
+    try {
+      $storage = $this->factory->getInstance('dataset');
+      // @todo Pass boolean as second parameter.
+      $storage->purgeUnneededResources($uuid);
+      $this->logger()->info("Queued the purging of unneeded resources in dataset {$uuid}.");
+    }
+    catch (\Exception $e) {
+      $this->logger()->error("Error while queueing the purging of unneeded resources in dataset {$uuid}: " . $e->getMessage());
+    }
+  }
+
 }
