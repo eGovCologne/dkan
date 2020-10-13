@@ -1,22 +1,31 @@
 <?php
 
-namespace Drupal\dashboard;
+namespace Drupal\dashboard\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
-
-class Routes {
+class Controller {
 
   private $datasets = [];
 
-  public function dashboard() {
+  public function harvests() {
 
     $outputs = [];
 
     $outputs[] = $this->harvestsInfo();
-    $outputs[] = $this->datasetsInfo();
+    //
 
     $build = [
       '#markup' => implode("", $outputs),
+    ];
+
+    return $build;
+  }
+
+  public function harvestDatasets($harvestId) {
+
+    $outputs[] = $this->datasetsInfo($harvestId);
+
+    $build = [
+      '#markup' => "<h2>{$harvestId}</h2>" . implode("", $outputs),
     ];
 
     return $build;
@@ -27,10 +36,10 @@ class Routes {
     $harvestService = \Drupal::service('dkan.harvest.service');
 
     $htmlParts = ["<table>"];
-    $htmlParts[] = "<tr><th>Harvest</th><th>Last Run</th><th>Status</th><th>Datasets</th></tr>";
+    $htmlParts[] = "<tr><th>Harvest ID</th><th>Last Run</th><th>Status</th><th># of Datasets</th></tr>";
 
     foreach ($harvestService->getAllHarvestIds() as $harvestId) {
-      $htmlParts[] = "<tr><td>{$harvestId}</td>";
+      $htmlParts[] = "<tr><td><a href='/admin/reports/dkan/dashboard/{$harvestId}'>{$harvestId}</a></td>";
 
       $runIds = $harvestService->getAllHarvestRunInfo($harvestId);
       $runId = end($runIds);
@@ -41,7 +50,10 @@ class Routes {
       date_default_timezone_set('EST');
       $time = date('m/d/y H:m:s T', $runId);
 
-      $htmlParts[] = "<td>{$time}</td><td>{$status->extract}</td><td>{$this->harvestLoadStatusTable($status->load)}</td></tr>";
+      $datasets = array_keys((array) $status->load);
+      $numDatasets = count($datasets);
+
+      $htmlParts[] = "<td>{$time}</td><td>{$status->extract}</td><td>{$numDatasets}</td></tr>";
 
       $htmlParts[] = "</tr>";
     }
@@ -53,25 +65,38 @@ class Routes {
   private function harvestLoadStatusTable($loadStatus) {
     $datasets = array_keys((array) $loadStatus);
 
-    $htmlParts = ["<table>"];
+    $htmlParts = ["<table><tr><th>Dataset ID</th><th>Status</th></tr>"];
 
-    $htmlParts += array_map(function ($datasetId) use ($loadStatus) {
+    $datasetStuff = array_map(function ($datasetId) use ($loadStatus) {
       $this->datasets[] = $datasetId;
       $status = $loadStatus->{$datasetId};
-      return "<tr><td><a href='#{$datasetId}'>{$datasetId}</a></td><td>{$status}</td></tr>";
+      return "<tr><td>{$datasetId}</td><td>{$status}</td></tr>";
     }, $datasets);
+
+    $htmlParts = array_merge($htmlParts, $datasetStuff);
 
     $htmlParts[] = "</table>";
     return implode("", $htmlParts);
   }
 
-  private function datasetsInfo() {
-    $htmlParts = ["<table><tr><th>Dataset</th><th>Title</th><th>Modified Date (Metadata)</th><th>Modified Date (DKAN)</th><th>Resources</th></tr>"];
+  private function datasetsInfo($harvestId) {
+    $harvestService = \Drupal::service('dkan.harvest.service');
+    $runIds = $harvestService->getAllHarvestRunInfo($harvestId);
+    $runId = end($runIds);
+
+    $json = $harvestService->getHarvestRunInfo($harvestId, $runId);
+    $info = json_decode($json);
+    $status = $info->status;
+    $datasets = array_keys((array) $status->load);
+
+    $htmlParts = [];
+    $htmlParts[] = $this->harvestLoadStatusTable($status->load);
+    $htmlParts[] = "<table><tr><th>Dataset ID</th><th>Title</th><th>Modified Date (Metadata)</th><th>Modified Date (DKAN)</th><th>Resources</th></tr>";
 
     /* @var \Drupal\metastore\Service $service */
     $service = \Drupal::service('dkan.metastore.service');
 
-    $htmlParts += array_map(function ($datasetId) use ($service) {
+    $datasetStuff = array_map(function ($datasetId) use ($service) {
 
       try {
         $datasetJson = $service->get('dataset', $datasetId);
@@ -82,7 +107,7 @@ class Routes {
         $resources = [];
       }
 
-      $htmlParts = ["<tr><td><a name='{$datasetId}'>{$datasetId}</a></td>"];
+      $htmlParts = ["<tr><td>{$datasetId}</td>"];
 
       if (empty($dataset)) {
         $htmlParts[] = "<td colspan='4'>Not Published</td>";
@@ -91,10 +116,11 @@ class Routes {
         $dkanModified = $dataset->{"%modified"};
         $htmlParts[] = "<td>{$dataset->title}</td><td>{$dataset->modified}</td><td>{$dkanModified}</td><td>{$this->resourcesInfo($resources)}</td>";
       }
-      $htmlParts[] = "</td>";
+      $htmlParts[] = "</tr>";
       return implode("", $htmlParts);
+    }, $datasets);
 
-    }, $this->datasets);
+    $htmlParts = array_merge($htmlParts, $datasetStuff);
 
     $htmlParts[] = "</table>";
     return implode("", $htmlParts);

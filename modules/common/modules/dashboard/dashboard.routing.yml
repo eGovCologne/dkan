@@ -1,9 +1,19 @@
-dkan_dashboard:
+dkan_dashboard_harvests:
   path: '/admin/reports/dkan/dashboard'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dashboard\Routes::dashboard'}
+    { _controller: '\Drupal\dashboard\Controller\Controller::harvests'}
   requirements:
-    _permission: 'get data through the alternate metastore api'
+    _permission: 'dkan_dashboard'
   options:
     _auth: ['basic_auth', 'cookie']
+
+dkan_dashboard_harvest_datasets:
+  path: '/admin/reports/dkan/dashboard/{harvestId}'
+  methods: [ GET ]
+  defaults:
+    { _controller: '\Drupal\dashboard\Controller\Controller::harvestDatasets' }
+  requirements:
+    _permission: 'dkan_dashboard'
+  options:
+    _auth: [ 'basic_auth', 'cookie' ]
