@@ -54,4 +54,5 @@ class ImportInfoList {
 
     return $list;
   }
+
 }

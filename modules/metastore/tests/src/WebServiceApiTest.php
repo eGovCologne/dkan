@@ -66,7 +66,8 @@ class WebServiceApiTest extends TestCase {
    *
    */
   public function testGetResourcesException() {
-    $mockChain = $this->getCommonMockChain();;
+    $mockChain = $this->getCommonMockChain();
+    ;
     $mockChain->add(Service::class, 'getResources', new \Exception("bad"));
 
     $controller = WebServiceApi::create($mockChain->getMock());
@@ -78,7 +79,8 @@ class WebServiceApiTest extends TestCase {
    *
    */
   public function testGetException() {
-    $mockChain = $this->getCommonMockChain();;
+    $mockChain = $this->getCommonMockChain();
+    ;
     $mockChain->add(Service::class, 'get', new \Exception("bad"));
 
     $controller = WebServiceApi::create($mockChain->getMock());

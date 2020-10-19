@@ -4,7 +4,6 @@ namespace Drupal\metastore\Reference;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Queue\QueueFactory;
-use stdClass;
 
 /**
  * OrphanChecker.
@@ -42,7 +41,7 @@ class OrphanChecker {
    * @param object $data
    *   Dataset to be deleted.
    */
-  public function processReferencesInDeletedDataset(stdClass $data) {
+  public function processReferencesInDeletedDataset(\stdClass $data) {
     // Cycle through the dataset properties we seek to reference.
     foreach ($this->getPropertyList() as $property_id) {
       if (isset($data->{$property_id})) {
@@ -59,7 +58,7 @@ class OrphanChecker {
    * @param object $new_dataset
    *   Updated dataset.
    */
-  public function processReferencesInUpdatedDataset(stdClass $old_dataset, stdClass $new_dataset) {
+  public function processReferencesInUpdatedDataset(\stdClass $old_dataset, \stdClass $new_dataset) {
     // Cycle through the dataset properties being referenced, check for orphans.
     foreach ($this->getPropertyList() as $property_id) {
       if (!isset($old_dataset->{$property_id})) {

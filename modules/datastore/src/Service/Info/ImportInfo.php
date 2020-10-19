@@ -64,7 +64,7 @@ class ImportInfo {
       $item->fileFetcherPercentDone = $this->getPercentDone($ff);
     }
 
-    /* @var $imp Importer */
+    /** @var \Dkan\Datastore\Importer $imp */
     if (isset($imp)) {
       $item->importerStatus = $imp->getResult()->getStatus();
       $item->importerBytes = $this->getBytesProcessed($imp);

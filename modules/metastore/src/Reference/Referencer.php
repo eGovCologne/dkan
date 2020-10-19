@@ -8,7 +8,6 @@ use Drupal\common\Resource;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\metastore\ResourceMapper;
 use Drupal\node\NodeStorageInterface;
-use stdClass;
 
 /**
  * Referencer.
@@ -37,7 +36,7 @@ class Referencer {
    * @return object
    *   Json object modified with references to some of its properties' values.
    */
-  public function reference(stdClass $data) {
+  public function reference(\stdClass $data) {
     // Cycle through the dataset properties we seek to reference.
     foreach ($this->getPropertyList() as $property_id) {
       if (isset($data->{$property_id})) {
@@ -173,7 +172,7 @@ class Referencer {
         is_object($info[0]) &&
         isset($info[0]->identifier)) {
 
-        /* @var $stored Resource */
+        /** @var \Drupal\common\Resource $stored */
         $stored = $this->getFileMapper()->get($info[0]->identifier, Resource::DEFAULT_SOURCE_PERSPECTIVE);
         $downloadUrl = $this->handleExistingResource($info, $stored);
       }
@@ -302,7 +301,7 @@ class Referencer {
    */
   private function createPropertyReference(string $property_id, $value) {
     // Create json metadata for the reference.
-    $data = new stdClass();
+    $data = new \stdClass();
     $data->identifier = $this->getUuidService()->generate($property_id, $value);
     $data->data = $value;
 

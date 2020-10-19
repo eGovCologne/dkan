@@ -2,16 +2,21 @@
 
 namespace Drupal\dashboard\Controller;
 
+/**
+ *
+ */
 class Controller {
 
   private $datasets = [];
 
+  /**
+   *
+   */
   public function harvests() {
 
     $outputs = [];
 
     $outputs[] = $this->harvestsInfo();
-    //
 
     $build = [
       '#markup' => implode("", $outputs),
@@ -20,6 +25,9 @@ class Controller {
     return $build;
   }
 
+  /**
+   *
+   */
   public function harvestDatasets($harvestId) {
 
     $outputs[] = $this->datasetsInfo($harvestId);
@@ -31,8 +39,11 @@ class Controller {
     return $build;
   }
 
+  /**
+   *
+   */
   private function harvestsInfo() {
-    /* @var $harvestService \Drupal\harvest\Service */
+    /** @var \Drupal\harvest\Service $harvestService */
     $harvestService = \Drupal::service('dkan.harvest.service');
 
     $htmlParts = ["<table>"];
@@ -62,6 +73,9 @@ class Controller {
     return implode("", $htmlParts);
   }
 
+  /**
+   *
+   */
   private function harvestLoadStatusTable($loadStatus) {
     $datasets = array_keys((array) $loadStatus);
 
@@ -79,6 +93,9 @@ class Controller {
     return implode("", $htmlParts);
   }
 
+  /**
+   *
+   */
   private function datasetsInfo($harvestId) {
     $harvestService = \Drupal::service('dkan.harvest.service');
     $runIds = $harvestService->getAllHarvestRunInfo($harvestId);
@@ -93,7 +110,7 @@ class Controller {
     $htmlParts[] = $this->harvestLoadStatusTable($status->load);
     $htmlParts[] = "<table><tr><th>Dataset ID</th><th>Title</th><th>Modified Date (Metadata)</th><th>Modified Date (DKAN)</th><th>Resources</th></tr>";
 
-    /* @var \Drupal\metastore\Service $service */
+    /** @var \Drupal\metastore\Service $service */
     $service = \Drupal::service('dkan.metastore.service');
 
     $datasetStuff = array_map(function ($datasetId) use ($service) {
@@ -126,8 +143,11 @@ class Controller {
     return implode("", $htmlParts);
   }
 
+  /**
+   *
+   */
   private function resourcesInfo($resources) {
-    /* @var $service \Drupal\datastore\Service\Info\ImportInfo */
+    /** @var \Drupal\datastore\Service\Info\ImportInfo $service */
     $service = \Drupal::service('dkan.datastore.import_info');
     $htmlParts = ["<table><tr><th>Identifier</th><th>Local File</th><th></th><th>Datastore</th><th></th></tr>"];
     foreach ($resources as $resource) {
@@ -143,4 +163,5 @@ class Controller {
     $htmlParts[] = "</table>";
     return implode("", $htmlParts);
   }
+
 }

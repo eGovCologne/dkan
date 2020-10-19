@@ -18,7 +18,6 @@ function App({ tempUUID, isNew }) {
   const [uiSchema, setUiSchema] = useState({});
   const [formData, setFormData] = useState({});
 
-
   useEffect(() => {
     async function fetchSchema() {
       const response = await axios.get(baseUrl + '/api/1/metastore/schemas/dataset').then(
@@ -106,7 +105,7 @@ function App({ tempUUID, isNew }) {
   }
 
   const CustomDescriptionField = ({id, description}) => {
-    return <div className="dc-field-label"  id={id} dangerouslySetInnerHTML={{__html: description}} />
+    return < div className = "dc-field-label"  id = {id} dangerouslySetInnerHTML = {{__html: description}} / >
   };
 
   const fields = {
@@ -126,33 +125,33 @@ function App({ tempUUID, isNew }) {
   }
 
   return (
-    <>
-      <ToastBox
-        timerExpires={10000}
-        position="top-left"
-        pauseOnHover={true}
-        intent="success"
-      />
-      <button className="btn btn-default" type="button" onClick={event =>  window.location.href='/admin/content/datasets'}>Back to Datasets</button>
-      <Form
-        id="dc-json-editor"
-        schema={schema}
-        fields={fields}
-        formData={formData}
-        uiSchema={uiSchema}
-        autoComplete="on"
-        transformErrors={transformErrors}
-        onSubmit={ (e) => {
+    < >
+      < ToastBox
+        timerExpires = {10000}
+        position = "top-left"
+        pauseOnHover = {true}
+        intent = "success"
+      / >
+      < button className = "btn btn-default" type = "button" onClick = {event => window.location.href = '/admin/content/datasets'} > Back to Datasets < / button >
+      < Form
+        id = "dc-json-editor"
+        schema = {schema}
+        fields = {fields}
+        formData = {formData}
+        uiSchema = {uiSchema}
+        autoComplete = "on"
+        transformErrors = {transformErrors}
+        onSubmit = { (e) => {
           setMessage("");
           submitDataset(e);
         } }
-        onError={(e) => { window.scrollTo(0,0); console.error(e);}}>
-        <div className="dc-form-actions">
-          <button className="btn btn-success" type="submit">Submit</button>
-          <button className="btn btn-default" type="button" onClick={event =>  window.location.href='/admin/content/datasets'}>Cancel</button>
-        </div>
-      </Form>
-    </>
+        onError = {(e) => { window.scrollTo(0,0); console.error(e);}} >
+        < div className = "dc-form-actions" >
+          < button className = "btn btn-success" type = "submit" > Submit < / button >
+          < button className = "btn btn-default" type = "button" onClick = {event => window.location.href = '/admin/content/datasets'} > Cancel < / button >
+        < / div >
+      < / Form >
+    < / >
   );
 }
 

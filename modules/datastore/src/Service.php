@@ -10,7 +10,6 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\Factory\Import;
-use Drupal\datastore\Service\Info\ImportInfoList;
 
 /**
  * Main services for the datastore.
@@ -99,7 +98,7 @@ class Service implements ContainerInjectionInterface {
   private function getResource($identifier, $version) {
     $label = $this->getLabelFromObject($this->resourceLocalizer);
 
-    /* @var $resource \Drupal\common\Resource */
+    /** @var \Drupal\common\Resource $resource */
     $resource = $this->resourceLocalizer->get($identifier, $version);
 
     if ($resource) {
@@ -172,11 +171,14 @@ class Service implements ContainerInjectionInterface {
    * Get a list of all stored importers and filefetchers, and their status.
    */
   public function list() {
-    /* @var $service ImportInfoList */
+    /** @var \Drupal\datastore\Service\Factory\ImportInfoList $service */
     $service = \Drupal::service('dkan.datastore.import_info_list');
     return $service->buildList();
   }
 
+  /**
+   *
+   */
   public function summary($identifier) {
     [$id, $version] = Resource::getIdentifierAndVersion($identifier);
     $storage = $this->getStorage($id, $version);
@@ -197,7 +199,7 @@ class Service implements ContainerInjectionInterface {
    *   The version of the resource.
    */
   public function getStorage($identifier, $version = NULL) {
-    /* @var $resource \Drupal\common\Resource */
+    /** @var \Drupal\common\Resource $resource */
     $resource = $this->resourceLocalizer->get($identifier, $version);
     if ($resource) {
       $importService = $this->getImportService($resource);
