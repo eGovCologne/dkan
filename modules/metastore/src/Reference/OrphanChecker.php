@@ -141,7 +141,7 @@ class OrphanChecker {
    */
   private function objectsCheck($objects) {
     foreach ($objects as $object) {
-      if (!is_object($object) ) {
+      if (!is_object($object)) {
         throw new \Exception("data given must be an object.");
       }
     }
