@@ -62,9 +62,7 @@ class OrphanChecker {
    *   Updated dataset.
    */
   public function processReferencesInUpdatedDataset($old_dataset, $new_dataset) {
-    if (!is_object($new_dataset) && !is_object($old_dataset)) {
-      throw new \Exception("new and old datasets must be objects.");
-    }
+    $this->objectsCheck([$old_dataset, $new_dataset]);
     // Cycle through the dataset properties being referenced, check for orphans.
     foreach ($this->getPropertyList() as $property_id) {
       if (!isset($old_dataset->{$property_id})) {
@@ -135,6 +133,17 @@ class OrphanChecker {
 
     foreach (array_diff($old_value, $new_value) as $removed_reference) {
       $this->queueReferenceForRemoval($property_id, $removed_reference);
+    }
+  }
+
+  /**
+   * Private.
+   */
+  private function objectsCheck($objects) {
+    foreach ($objects as $object) {
+      if (!is_object($object) ) {
+        throw new \Exception("data given must be an object.");
+      }
     }
   }
 
