@@ -87,6 +87,7 @@ class WebServiceApi implements ContainerInjectionInterface {
 
     try {
       $resourceId = $payload->resource_id;
+      $identifier = NULL; $version = NULL;
       [$identifier, $version] = Resource::getIdentifierAndVersion($resourceId);
       $results = $this->datastoreService->import($identifier, FALSE, $version);
       return $this->getResponse($results);

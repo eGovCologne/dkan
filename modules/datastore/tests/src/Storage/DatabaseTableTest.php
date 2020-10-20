@@ -48,7 +48,7 @@ class DatabaseTableTest extends TestCase {
         "record_number" => [
           "type" => "serial",
           "unsigned" => TRUE,
-          "not null" => TRUE,
+          "not NULL" => TRUE,
         ],
         "first_name" => [
           "type" => "text",
@@ -254,7 +254,7 @@ class DatabaseTableTest extends TestCase {
   /**
    *
    */
-  public function testPrepareDataJsonDecodeNull() {
+  public function testPrepareDataJsonDecodeNULL() {
     $connectionChain = $this->getConnectionChain()
       ->add(Connection::class, 'insert', Insert::class)
       ->add(Insert::class, 'fields', Insert::class)

@@ -41,7 +41,10 @@ class OrphanChecker {
    * @param object $data
    *   Dataset to be deleted.
    */
-  public function processReferencesInDeletedDataset(\stdClass $data) {
+  public function processReferencesInDeletedDataset($data) {
+    if (!is_object($data)) {
+      throw new \Exception("data must be an object.");
+    }
     // Cycle through the dataset properties we seek to reference.
     foreach ($this->getPropertyList() as $property_id) {
       if (isset($data->{$property_id})) {
@@ -58,7 +61,10 @@ class OrphanChecker {
    * @param object $new_dataset
    *   Updated dataset.
    */
-  public function processReferencesInUpdatedDataset(\stdClass $old_dataset, \stdClass $new_dataset) {
+  public function processReferencesInUpdatedDataset($old_dataset, $new_dataset) {
+    if (!is_object($new_dataset) && !is_object($old_dataset)) {
+      throw new \Exception("new and old datasets must be objects.");
+    }
     // Cycle through the dataset properties being referenced, check for orphans.
     foreach ($this->getPropertyList() as $property_id) {
       if (!isset($old_dataset->{$property_id})) {

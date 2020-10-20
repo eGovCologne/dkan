@@ -65,6 +65,7 @@ class Service implements ContainerInjectionInterface {
       ];
     }
 
+    $resource = NULL; $result = NULL;
     [$resource, $result] = $this->getResource($identifier, $version);
 
     if (!$resource) {
@@ -177,9 +178,10 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   *
+   * Summary.
    */
   public function summary($identifier) {
+    $id = NULL; $version = NULL;
     [$id, $version] = Resource::getIdentifierAndVersion($identifier);
     $storage = $this->getStorage($id, $version);
 

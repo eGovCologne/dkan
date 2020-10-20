@@ -36,14 +36,18 @@ class ImportInfo {
   }
 
   /**
-   * Static function to build a full object with a single call.
+   * Get an information item.
    *
-   * @param \FileFetcher\FileFetcher $fileFetcher
-   *   The FileFetcher object.
-   * @param \Dkan\Datastore\Importer|null $importer
-   *   Importer object.
+   * @param string $identifier
+   *   Resource identifier.
+   * @param string $version
+   *   Resource version.
+   *
+   * @return object
+   *   And object with info about imports: file name, fetching status, etc.
    */
-  public function getItem($identifier, $version) {
+  public function getItem(string $identifier, string $version) {
+    $ff = NULL; $imp = NULL;
     [$ff, $imp] = $this->getFileFetcherAndImporter($identifier, $version);
 
     $item = (object) [

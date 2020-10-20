@@ -37,7 +37,7 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
         [
           'type' => 'serial',
           'unsigned' => TRUE,
-          'not null' => TRUE,
+          'not NULL' => TRUE,
         ],
     ];
 

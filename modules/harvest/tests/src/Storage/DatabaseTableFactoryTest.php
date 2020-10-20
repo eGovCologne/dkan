@@ -18,7 +18,7 @@ class DatabaseTableFactoryTest extends UnitTestCase {
    */
   public function test() {
     $factory = new DatabaseTableFactory($this->getConnection());
-    $this->assertNotNull($factory->getInstance('blah', []));
+    $this->assertNotNULL($factory->getInstance('blah', []));
   }
 
   /**

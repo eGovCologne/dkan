@@ -3,14 +3,14 @@
 namespace Drupal\dashboard\Controller;
 
 /**
- *
+ * Controller.
  */
 class Controller {
 
   private $datasets = [];
 
   /**
-   *
+   * A list of harvests and some status info.
    */
   public function harvests() {
 
@@ -26,7 +26,7 @@ class Controller {
   }
 
   /**
-   *
+   * Datasets information for a specific harvest.
    */
   public function harvestDatasets($harvestId) {
 
@@ -40,7 +40,7 @@ class Controller {
   }
 
   /**
-   *
+   * Private.
    */
   private function harvestsInfo() {
     /** @var \Drupal\harvest\Service $harvestService */
@@ -74,7 +74,7 @@ class Controller {
   }
 
   /**
-   *
+   * Private.
    */
   private function harvestLoadStatusTable($loadStatus) {
     $datasets = array_keys((array) $loadStatus);
@@ -94,7 +94,7 @@ class Controller {
   }
 
   /**
-   *
+   * Private.
    */
   private function datasetsInfo($harvestId) {
     $harvestService = \Drupal::service('dkan.harvest.service');
@@ -139,27 +139,6 @@ class Controller {
 
     $htmlParts = array_merge($htmlParts, $datasetStuff);
 
-    $htmlParts[] = "</table>";
-    return implode("", $htmlParts);
-  }
-
-  /**
-   *
-   */
-  private function resourcesInfo($resources) {
-    /** @var \Drupal\datastore\Service\Info\ImportInfo $service */
-    $service = \Drupal::service('dkan.datastore.import_info');
-    $htmlParts = ["<table><tr><th>Identifier</th><th>Local File</th><th></th><th>Datastore</th><th></th></tr>"];
-    foreach ($resources as $resource) {
-      $identifier = $resource->identifier;
-
-      $prop = "%Ref:downloadURL";
-      $data = $resource->data->{$prop}[0]->data;
-
-      $info = $service->getItem($data->identifier, $data->version);
-
-      $htmlParts[] = "<tr><td>{$identifier}</td><td>{$info->fileFetcherStatus}</td><td>{$info->fileFetcherPercentDone}%</td><td>{$info->importerStatus}</td><td>{$info->importerPercentDone}%</td></tr>";
-    }
     $htmlParts[] = "</table>";
     return implode("", $htmlParts);
   }

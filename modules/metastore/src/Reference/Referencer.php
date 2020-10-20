@@ -36,7 +36,10 @@ class Referencer {
    * @return object
    *   Json object modified with references to some of its properties' values.
    */
-  public function reference(\stdClass $data) {
+  public function reference($data) {
+    if (!is_object($data)) {
+      throw new \Exception("data must be an object.");
+    }
     // Cycle through the dataset properties we seek to reference.
     foreach ($this->getPropertyList() as $property_id) {
       if (isset($data->{$property_id})) {
@@ -266,7 +269,7 @@ class Referencer {
    *   The property's value used to find an existing reference.
    *
    * @return string|null
-   *   The existing reference's uuid, or null if not found.
+   *   The existing reference's uuid, or NULL if not found.
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
@@ -293,7 +296,7 @@ class Referencer {
    *   The property's value.
    *
    * @return string|null
-   *   The new reference's uuid, or null.
+   *   The new reference's uuid, or NULL.
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException

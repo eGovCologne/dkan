@@ -46,7 +46,7 @@ class ResourceLocalizerTest extends TestCase {
 
     $resource = new Resource('http://hello.world/file.csv', 'text/csv');
     $service = new ResourceLocalizer($fileMapper, $jobStoreFactory, $drupalFiles);
-    $this->assertNull($service->get($resource->getIdentifier(), $resource->getVersion()));
+    $this->assertNULL($service->get($resource->getIdentifier(), $resource->getVersion()));
   }
 
 }
