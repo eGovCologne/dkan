@@ -114,32 +114,38 @@ class Controller {
     $service = \Drupal::service('dkan.metastore.service');
 
     $datasetStuff = array_map(function ($datasetId) use ($service) {
-
-      try {
-        $datasetJson = $service->get('dataset', $datasetId);
-        $dataset = json_decode($datasetJson);
-        $resources = $dataset->{"%Ref:distribution"};
-      }
-      catch (\Exception $e) {
-        $resources = [];
-      }
-
-      $htmlParts = ["<tr><td>{$datasetId}</td>"];
-
-      if (empty($dataset)) {
-        $htmlParts[] = "<td colspan='4'>Not Published</td>";
-      }
-      else {
-        $dkanModified = $dataset->{"%modified"};
-        $htmlParts[] = "<td>{$dataset->title}</td><td>{$dataset->modified}</td><td>{$dkanModified}</td><td>{$this->resourcesInfo($resources)}</td>";
-      }
-      $htmlParts[] = "</tr>";
-      return implode("", $htmlParts);
+      return $this->datasetInfoDetails($datasetId, $service);
     }, $datasets);
 
     $htmlParts = array_merge($htmlParts, $datasetStuff);
 
     $htmlParts[] = "</table>";
+    return implode("", $htmlParts);
+  }
+
+  /**
+   * Private.
+   */
+  private function datasetInfoDetails($datasetId, $service) {
+    try {
+      $datasetJson = $service->get('dataset', $datasetId);
+      $dataset = json_decode($datasetJson);
+      $resources = $dataset->{"%Ref:distribution"};
+    }
+    catch (\Exception $e) {
+      $resources = [];
+    }
+
+    $htmlParts = ["<tr><td>{$datasetId}</td>"];
+
+    if (empty($dataset)) {
+      $htmlParts[] = "<td colspan='4'>Not Published</td>";
+    }
+    else {
+      $dkanModified = $dataset->{"%modified"};
+      $htmlParts[] = "<td>{$dataset->title}</td><td>{$dataset->modified}</td><td>{$dkanModified}</td><td>{$this->resourcesInfo($resources)}</td>";
+    }
+    $htmlParts[] = "</tr>";
     return implode("", $htmlParts);
   }
 
