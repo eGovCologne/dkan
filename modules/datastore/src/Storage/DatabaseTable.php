@@ -133,7 +133,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
       [
         'type' => 'serial',
         'unsigned' => TRUE,
-        'not NULL' => TRUE,
+        'not null' => TRUE,
       ],
     ];
     $fields = array_merge($new_field, $fields);

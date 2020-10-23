@@ -49,7 +49,7 @@ class JobStore extends AbstractDatabaseTable {
   private function setOurSchema() {
     $schema = [
       'fields' => [
-        'ref_uuid' => ['type' => 'varchar', 'length' => 128, 'not NULL' => TRUE],
+        'ref_uuid' => ['type' => 'varchar', 'length' => 128, 'not null' => TRUE],
         'job_data' => ['type' => 'text', 'length' => 65535],
       ],
       'indexes' => [

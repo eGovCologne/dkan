@@ -48,7 +48,7 @@ class DatabaseTableTest extends TestCase {
         "record_number" => [
           "type" => "serial",
           "unsigned" => TRUE,
-          "not NULL" => TRUE,
+          "not null" => TRUE,
         ],
         "first_name" => [
           "type" => "text",
